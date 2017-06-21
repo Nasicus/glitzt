@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpModule, JsonpModule } from "@angular/http";
 
 import { AppComponent } from './app.component';
 import { LitzComponent } from './litz.component';
@@ -12,7 +13,9 @@ import { AppRoutingModule } from "./app-routing.module";
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpModule,
+    JsonpModule,
   ],
   exports: [
     LitzComponent

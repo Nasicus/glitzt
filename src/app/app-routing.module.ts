@@ -9,6 +9,10 @@ const routes: Routes = [
     component: LitzComponent
   },
   {
+    path: ":name/:litzImageIndex",
+    component: LitzComponent
+  },
+  {
     path: "**",
     component: LitzComponent,
   }
