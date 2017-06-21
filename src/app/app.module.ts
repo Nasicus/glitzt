@@ -4,12 +4,14 @@ import { HttpModule, JsonpModule } from "@angular/http";
 
 import { AppComponent } from './app.component';
 import { LitzComponent } from './litz.component';
+import { GithubForkComponent } from './github-fork.component';
 import { AppRoutingModule } from "./app-routing.module";
 
 @NgModule({
   declarations: [
     AppComponent,
-    LitzComponent
+    LitzComponent,
+    GithubForkComponent
   ],
   imports: [
     BrowserModule,

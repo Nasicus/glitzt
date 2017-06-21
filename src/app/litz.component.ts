@@ -1,14 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
-import { Http } from "@angular/http";
+import { Http, Response } from "@angular/http";
 
 @Component({
   templateUrl: './litz.component.html'
 })
 export class LitzComponent implements OnInit {
+
   public litzMessage: string;
   public imageName: string;
+  public name: string;
   public litzImageIndex: number;
+  public permaLink: string;
 
   public constructor(private route: ActivatedRoute, private http: Http) {
   }
@@ -22,6 +25,7 @@ export class LitzComponent implements OnInit {
   }
 
   private setMessage(name?: string): void {
+    this.name = name;
     if (name) {
       if (name != "mich") {
         this.litzMessage = `Dä ${this.capitalizeFirstLetter(name)} häts glitzt!`;
@@ -38,13 +42,38 @@ export class LitzComponent implements OnInit {
   }
 
   private getRandomImage(): void {
-    this.http.get("/server/list-all-litzes.php").subscribe(res => {
-      let images: string[] = res.json();
-      let randomIndex: number = Math.floor(Math.random() * (images.length - 1));
-      this.imageName = LitzComponent.isValidIndex(images, this.litzImageIndex)
-                         ? images[randomIndex]
-                         : images[this.litzImageIndex];
-    });
+    this.http
+        .get("/server/list-all-litzes.php")
+        .subscribe(res => this.onGetRandomImageSuccess(res),
+                   error => this.setFallbackImage());
+  }
+
+  private onGetRandomImageSuccess(res: Response): void {
+    let images: string[];
+    try {
+      images = res.json();
+    } catch (ex) {
+      this.setFallbackImage();
+      return;
+    }
+
+    let randomIndex: number = Math.floor(Math.random() * (images.length - 1));
+    let actualIndex: number = LitzComponent.isValidIndex(images, this.litzImageIndex)
+                                ? randomIndex
+                                : this.litzImageIndex;
+
+    this.imageName = images[actualIndex];
+    this.tryBuildPermaLink(actualIndex);
+  }
+
+  private tryBuildPermaLink(imageIndex: number): void {
+    if (this.name) {
+      this.permaLink = `${document.location.origin}/${this.name}/${imageIndex}`
+    }  
+  }
+
+  private setFallbackImage(): void {
+    this.imageName = "litz1.gif";
   }
 
   private static isValidIndex(arr: any[], index: number): boolean {
