@@ -7,26 +7,33 @@ import { Http, Response } from "@angular/http";
 })
 export class LitzComponent implements OnInit {
 
+  private static facePalmUniCode: string = "🤦";
+
   public litzMessage: string;
   public imageName: string;
   public name: string;
-  public litzImageIndex: number;
   public permaLink: string;
-
+  public baseUrl: string;
+  public showUploadStuff: boolean;
+  
   public constructor(private route: ActivatedRoute, private http: Http) {
   }
 
   public ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.setMessage(params["name"]);
-      this.litzImageIndex = Number(params["litzImageIndex"])
+      let urlImageName: string = params["litzImageName"];
+          if (!urlImageName) {
+            this.getRandomImage();
+          } else {
+            this.setImage(urlImageName);
+          }
     });
-    this.getRandomImage();
   }
 
   private setMessage(name?: string): void {
     this.name = name;
-    if (name) {
+    if (name && name != LitzComponent.facePalmUniCode) {
       if (name != "mich") {
         this.litzMessage = `Dä ${this.capitalizeFirstLetter(name)} häts glitzt!`;
       } else {
@@ -35,48 +42,27 @@ export class LitzComponent implements OnInit {
     } else {
       this.litzMessage = "S'hät wieder eine glitzt!";
     }
+
+    this.baseUrl = `${document.location.origin}/${this.name || LitzComponent.facePalmUniCode}`;
   }
 
   private capitalizeFirstLetter(value: string): string {
     return value.charAt(0).toUpperCase() + value.slice(1);
   }
 
-  private getRandomImage(): void {
+  public getRandomImage(): void {
     this.http
-        .get("/server/list-all-litzes.php")
-        .subscribe(res => this.onGetRandomImageSuccess(res),
+        .get("/server/random-litz.php")
+        .subscribe(res => this.setImage(res.json()),
                    error => this.setFallbackImage());
   }
 
-  private onGetRandomImageSuccess(res: Response): void {
-    let images: string[];
-    try {
-      images = res.json();
-    } catch (ex) {
-      this.setFallbackImage();
-      return;
-    }
-
-    let randomIndex: number = Math.floor(Math.random() * (images.length - 1));
-    let actualIndex: number = LitzComponent.isValidIndex(images, this.litzImageIndex)
-                                ? randomIndex
-                                : this.litzImageIndex;
-
-    this.imageName = images[actualIndex];
-    this.tryBuildPermaLink(actualIndex);
-  }
-
-  private tryBuildPermaLink(imageIndex: number): void {
-    if (this.name) {
-      this.permaLink = `${document.location.origin}/${this.name}/${imageIndex}`
-    }  
+  private setImage(imageName: string) {
+    this.imageName = imageName;
+    this.permaLink = `${this.baseUrl}/${imageName}`
   }
 
   private setFallbackImage(): void {
-    this.imageName = "litz1.gif";
-  }
-
-  private static isValidIndex(arr: any[], index: number): boolean {
-    return (isNaN(index) || index < 0 || (index > arr.length - 1))
+    this.setImage("litz1.gif");
   }
 }

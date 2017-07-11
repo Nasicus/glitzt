@@ -9,7 +9,7 @@ const routes: Routes = [
     component: LitzComponent
   },
   {
-    path: ":name/:litzImageIndex",
+    path: ":name/:litzImageName",
     component: LitzComponent
   },
   {
