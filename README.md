@@ -18,4 +18,4 @@ Das Projekt chan live agluegt und benutzt wärde unter:
 - [http://es-hät-wieder-eine-glitzt.ch/mich](http://xn--es-ht-wieder-eine-glitzt-tbc.ch/mich) => "Mich häts glitzt!"
 - [http://es-hät-wieder-eine-glitzt.ch/name](http://xn--es-ht-wieder-eine-glitzt-tbc.ch/<name>) => "Dä Name häts glitzt!"
 
-Zusätzlich chan mer z hinderscht mit `/<index>` no e fixes bild agäh wämer das wot (es handlet sich debi um dä index im image array. Dä musch dänk mit try-and-error usefinde, fräg doch nöd so blöd.)
+Zusätzlich chan mer z hinderscht mit `/<bildName>` no e fixes bild agäh wämer das wot (dä Bildname chasch erfahre indem uf "Permalink" drucksch untereme Bild oder au wänn eis ufeglade häsch.)
