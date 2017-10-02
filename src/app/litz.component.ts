@@ -3,7 +3,8 @@ import { ActivatedRoute } from "@angular/router";
 import { Http, Response } from "@angular/http";
 
 @Component({
-  templateUrl: './litz.component.html'
+  templateUrl: './litz.component.html',
+  styleUrls: ["./litz.component.css"]
 })
 export class LitzComponent implements OnInit {
 
