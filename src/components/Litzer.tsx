@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const fallbackImageId = "litz1.gif";
 
-export const LitzComponent: FC<{
+export const Litzer: FC<{
   name?: string;
   prefix?: string;
   imageId?: string;
@@ -39,15 +39,15 @@ export const LitzComponent: FC<{
 
   function getMessage() {
     if (name === "🤦" || name === "👩") {
-      return `S'hät wieder ${name == "👩" ? "eini" : "eine"} glitzt!`;
+      return `S'hät wieder ${name === "👩" ? "eini" : "eine"} glitzt!`;
     }
 
     if (name === "mich") {
       return "Mich häts glitzt!";
     }
 
-    const prefix = originalPrefix == "👩" ? "D'" : originalPrefix || "Dä";
-    return `${startWithUpper(prefix)} ${startWithUpper(name)} häts glitzt!`;
+    const prefix = originalPrefix === "👩" ? "D'" : originalPrefix || "Dä ";
+    return `${startWithUpper(prefix)}${startWithUpper(name)} häts glitzt!`;
   }
 
   function getPermalink() {

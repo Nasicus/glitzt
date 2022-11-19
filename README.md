@@ -4,7 +4,7 @@ Willkomme bim beschte Projekt wo du jemals uf Github - oder egal wo - wirsch fin
 
 I dem üsserscht komplexe Projekt, chasch azeige wärs glitzt hät!
 
-Und nei: Es isch überhaupt kein Overkill Next.js z'verwendä - das bruchts zwinged.
+Und nei: Es isch überhaupt kein Overkill React z'verwendä - das bruchts zwinged.
 
 Also heb dä Latz und pass besser uf, dasses DICH nöd litzt!
 
