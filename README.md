@@ -17,7 +17,7 @@ Das Projekt chan live agluegt und benutzt wärde unter:
 - [http://es-hät-wieder-eine-glitzt.ch/](http://xn--es-ht-wieder-eine-glitzt-tbc.ch/) => "S'hät wieder eine glitzt!"
 - [http://es-hät-wieder-eine-glitzt.ch/mich](http://xn--es-ht-wieder-eine-glitzt-tbc.ch/mich) => "Mich häts glitzt!"
 - [http://es-hät-wieder-eine-glitzt.ch/Markus](http://xn--es-ht-wieder-eine-glitzt-tbc.ch/Markus) => "Dä Markus häts glitzt!"
-- [http://es-hät-wieder-eine-glitzt.ch/👩/Melanie](http://xn--es-ht-wieder-eine-glitzt-tbc.ch/👩/Melanie) => "D' Melanie häts glitzt!"
-- [http://es-hät-wieder-eine-glitzt.ch/en/Elefant](http://xn--es-ht-wieder-eine-glitzt-tbc.ch/en/Elefant) => "En Elefant häts glitzt!"
+- [http://es-hät-wieder-eine-glitzt.ch/👩/Melanie](http://xn--es-ht-wieder-eine-glitzt-tbc.ch/👩/Melanie) => "D'Melanie häts glitzt!"
+- [http://es-hät-wieder-eine-glitzt.ch/en /Elefant](http://xn--es-ht-wieder-eine-glitzt-tbc.ch/en%20/Elefant) => "En Elefant häts glitzt!" ("en" cha irgendöbis si!)
 
 Zusätzlich chan mer z hinderscht mit `/<bildName>` no e fixes bild agäh wämer das wot (dä Bildname chasch erfahre indem uf "Permalink" drucksch untereme Bild oder au wänn eis ufeglade häsch.)
