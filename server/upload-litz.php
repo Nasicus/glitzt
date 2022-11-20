@@ -1,5 +1,7 @@
 <?php
 
+$password = "<da musch dis super sicherheits pw setze bevor das uf dä server tuesch>";
+
 function getGUID(){
     if (function_exists('com_create_guid')){
         return com_create_guid();
@@ -20,7 +22,11 @@ function isNullOrEmptyString($question){
     return (!isset($question) || trim($question)==='');
 }
 
-function uploadImage($imageObj) {
+function uploadImage($inputPassword, $imageObj) {
+    if ($inputPassword != $GLOBALS['password']) {
+        throw new Exception("Falsches Passwort du Honk! Häts di halt glitzt.");
+    }
+
     $targetDir = "../assets/litzes/";
 
     if (!file_exists($targetDir)) {
@@ -31,26 +37,26 @@ function uploadImage($imageObj) {
     $maxFileSizeByte = $maxFileSizeMB * 1024 * 1024;
     // if tmp_name is null / empty the file was not uploaded because it was too large (php.ini setting!)
     if (isNullOrEmptyString($imageObj["tmp_name"]) || $imageObj["size"] > $maxFileSizeByte) {
-        throw new Exception("Sorry, your file is too large.");
+        throw new Exception("S'File isch z'gross. Glitzt.");
     }
 
     $check = getimagesize($imageObj["tmp_name"]);
     if($check === false) {
-        throw new Exception("File is not an image.");
+        throw new Exception("Wetsch mi verarsche? Das isch gar keis Bild. En Litz direkt id Pfrässi git das!");
     }
 
     $imageFileType = pathinfo($imageObj["name"], PATHINFO_EXTENSION);
 
-    $allowedExtensions = array('jpg','jpeg','png','gif');
+    $allowedExtensions = array('gif');
     if(!in_array($imageFileType, $allowedExtensions)) {
-         throw new Exception("Sorry only " . implode(',', $allowedExtensions) . " files are allowed.");
+         throw new Exception("Du Hornochs numme " . implode(',', $allowedExtensions) . " sind erlaubt. Und Zack häts di glitzt.");
     }
 
     $targetName = getGUID() . "." . $imageFileType;
     $targetFile = $targetDir . $targetName;
 
     if (!move_uploaded_file($imageObj["tmp_name"], $targetFile)) {
-         throw new Exception("Sorry, there was an unknown error uploading your file.");
+         throw new Exception("Tuet mer leid, irgend en random error isch uftrete. Häts di halt trotzdem glitzt.");
     }
 
     return $targetName;
@@ -58,7 +64,7 @@ function uploadImage($imageObj) {
 
 try
 {
-    echo uploadImage($_FILES["image"]);
+    echo uploadImage($_REQUEST["password"], $_FILES["image"]);
 } catch (Exception $ex) {
     header("HTTP/1.1 500 Internal Server Error");
     echo $ex->getMessage();

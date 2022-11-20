@@ -2,6 +2,7 @@ import { FC } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { GithubFork } from "./components/GithubFork";
 import { Litzer } from "./components/Litzer";
+import { Uplitzer } from "./components/Uplitzer";
 import { LitzerWrapper } from "./LitzerWrapper";
 
 const App: FC = () => {
@@ -17,6 +18,10 @@ const App: FC = () => {
     {
       path: ":prefix/:name/:imageId",
       element: <LitzerWrapper />,
+    },
+    {
+      path: "würg",
+      element: <Uplitzer />,
     },
     {
       path: "*",
