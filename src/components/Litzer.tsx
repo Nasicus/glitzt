@@ -81,13 +81,18 @@ const Host = styled.div`
 `;
 
 const LitzImage = styled.img`
-  max-width: 100%;
-  width: 480px;
-  height: 307.848px;
-  left: 0px;
-  top: 0px;
+  object-fit: contain;
+  max-width: 480px;
+  max-height: 307.848px;
+  width: 100%;
+  height: auto;
 `;
 
-const LinkContainer = styled.span`
+const LinkContainer = styled.div`
   font-size: 0.75rem;
+
+  @media screen and (max-width: 700px) {
+    margin-top: 10px;
+    font-size: 1rem;
+  }
 `;

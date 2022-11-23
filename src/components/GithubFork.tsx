@@ -13,6 +13,7 @@ export const GithubFork: FC = () => {
 
 const Host = styled.div`
   text-align: center;
+  margin-top: 15px;
 
   a {
     background: #000;
