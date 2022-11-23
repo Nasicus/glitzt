@@ -81,6 +81,7 @@ const Host = styled.div`
 `;
 
 const LitzImage = styled.img`
+  max-width: 100%;
   width: 480px;
   height: 307.848px;
   left: 0px;
