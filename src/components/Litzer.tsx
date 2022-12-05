@@ -1,6 +1,7 @@
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { Separator } from "./Separator";
 
 const fallbackImageId = "litz1.gif";
 
@@ -33,7 +34,8 @@ export const Litzer: FC<{
       />
       <br />
       <LinkContainer>
-        <a href={getPermalink()}>Permalink</a>|{" "}
+        <Link to={getPermalink()}>Permalink</Link>
+        <Separator />
         <Link to="/würg">Würg neui Litz Bilder ine</Link>
       </LinkContainer>
     </Host>
