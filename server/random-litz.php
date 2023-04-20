@@ -6,6 +6,17 @@
      return $files[$file];
   }
 
-  header("Content-Type: application/json");
-  echo json_encode(basename(getRandomFile("../assets/litzes")));
+  $imagePath = getRandomFile("../assets/litzes");
+
+  if ($_GET["asImage"] == "true") {
+    $fp = fopen($imagePath, 'rb');
+
+    header("Content-Type: image/gif");
+    header("Content-Length: " . filesize($imagePath));
+
+    fpassthru($fp);
+  } else {
+    header("Content-Type: application/json");
+    echo json_encode(basename($imagePath));
+  }
 ?>
