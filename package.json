@@ -20,6 +20,7 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "@types/react-router-dom": "^5.3.3",
     "@types/styled-components": "^5.1.26",
     "husky": "^8.0.2",
     "lint-staged": "^13.0.3",

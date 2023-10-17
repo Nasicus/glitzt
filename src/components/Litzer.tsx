@@ -1,9 +1,15 @@
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Separator } from "./Separator";
 
 const fallbackImageId = "litz1.gif";
+
+function getPermalink(name: string, originalPrefix?: string, imageId = "") {
+  return originalPrefix
+    ? `/${originalPrefix}/${name}/${imageId}`
+    : `/${name}/${imageId}`;
+}
 
 export const Litzer: FC<{
   name?: string;
@@ -21,6 +27,24 @@ export const Litzer: FC<{
     initializeImageIdCallback().then(null);
   }, [initializeImageIdCallback]);
 
+  // set the url to permanent url if it's not already there
+  const location = useLocation();
+  const navigate = useNavigate();
+  const permalink = getPermalink(name, originalPrefix, imageId);
+  useEffect(() => {
+    const currentLink = location.pathname
+      .split("/")
+      .map((part) => decodeURIComponent(part))
+      .join("/");
+
+    if (!imageId || currentLink === permalink) {
+      return;
+    }
+
+    // navigate to permalink, if not there yet
+    navigate(permalink);
+  }, [imageId, location, navigate, permalink]);
+
   if (!imageId) {
     return null;
   }
@@ -34,8 +58,6 @@ export const Litzer: FC<{
       />
       <br />
       <LinkContainer>
-        <Link to={getPermalink()}>Permalink</Link>
-        <Separator />
         <Link to="/würg">Würg neui Litz Bilder ine</Link>
       </LinkContainer>
     </Host>
@@ -52,12 +74,6 @@ export const Litzer: FC<{
 
     const prefix = originalPrefix === "👩" ? "D'" : originalPrefix || "Dä ";
     return `${startWithUpper(prefix)}${startWithUpper(name)} häts glitzt!`;
-  }
-
-  function getPermalink() {
-    return originalPrefix
-      ? `/${originalPrefix}/${name}/${imageId}`
-      : `/${name}/${imageId}`;
   }
 
   async function initializeImageId() {
