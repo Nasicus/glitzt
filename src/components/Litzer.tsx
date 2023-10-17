@@ -54,6 +54,7 @@ export const Litzer: FC<{
       <br />
       <LinkContainer>
         <button
+          disabled={getNextImage}
           onClick={() => {
             setGetNextImage(true);
           }}
@@ -91,13 +92,14 @@ export const Litzer: FC<{
     }
 
     try {
+      const nextImageId = await fetch(
+        `${getServerBaseUrl()}/server/random-litz.php`
+      ).then((r) => r.json());
+
       setGetNextImage(false);
-      setImageId(
-        await fetch(`${getServerBaseUrl()}/server/random-litz.php`).then((r) =>
-          r.json()
-        )
-      );
+      setImageId(nextImageId);
     } catch (err) {
+      setGetNextImage(false);
       console.error(`Failed to load image: ${JSON.stringify(err)}`);
       setImageId(fallbackImageId);
     }
