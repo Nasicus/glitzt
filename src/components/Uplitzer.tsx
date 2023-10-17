@@ -2,6 +2,7 @@ import { FC, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { getServerBaseUrl } from "../urlUtils";
 
 const fileTypes = ["GIF"];
 
@@ -36,10 +37,13 @@ export const Uplitzer: FC = () => {
     data.append("password", password);
 
     try {
-      const response = await fetch("/server/upload-litz.php", {
-        method: "POST",
-        body: data,
-      });
+      const response = await fetch(
+        `${getServerBaseUrl()}/server/upload-litz.php"`,
+        {
+          method: "POST",
+          body: data,
+        }
+      );
       const responseText = await response.text();
 
       if (response.status > 204) {

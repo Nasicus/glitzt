@@ -1,4 +1,6 @@
 <?php
+  header('Access-Control-Allow-Origin: *'); 
+
   function getRandomFile($dir)
   {
      $files = glob($dir . "/*.*");
