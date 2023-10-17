@@ -58,6 +58,15 @@ export const Litzer: FC<{
       />
       <br />
       <LinkContainer>
+        <button
+          onClick={() => {
+            setImageId(undefined);
+            initializeImageIdCallback();
+          }}
+        >
+          Es anders Bild
+        </button>
+        <Separator />
         <Link to="/würg">Würg neui Litz Bilder ine</Link>
       </LinkContainer>
     </Host>
