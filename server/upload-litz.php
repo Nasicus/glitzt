@@ -1,4 +1,5 @@
 <?php
+header('Access-Control-Allow-Origin: *'); 
 
 $password = "<da musch dis super sicherheits pw setze bevor das uf dä server tuesch>";
 

@@ -1,6 +1,7 @@
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { FC, useEffect, useMemo, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { getServerBaseUrl } from "../urlUtils";
 import { Separator } from "./Separator";
 
 const fallbackImageId = "litz1.gif";
@@ -12,14 +13,30 @@ export const Litzer: FC<{
 }> = ({ name = "🤦", imageId: initialImageId, prefix: originalPrefix }) => {
   const litzMessage = useMemo(getMessage, [name, originalPrefix]);
   const [imageId, setImageId] = useState(initialImageId);
-  const initializeImageIdCallback = useCallback(initializeImageId, [
-    initialImageId,
-    setImageId,
-  ]);
+  const [getNextImage, setGetNextImage] = useState(!initialImageId);
 
   useEffect(() => {
-    initializeImageIdCallback().then(null);
-  }, [initializeImageIdCallback]);
+    initializeImageId().then(null);
+  }, [getNextImage]);
+
+  // set the url to permanent url if it's not already there
+  const location = useLocation();
+  const navigate = useNavigate();
+  const permalink = getPermalink(name, originalPrefix, imageId);
+
+  useEffect(() => {
+    const currentLink = location.pathname
+      .split("/")
+      .map((part) => decodeURIComponent(part))
+      .join("/");
+
+    if (!imageId || currentLink === permalink) {
+      return;
+    }
+
+    // navigate to permalink, if not there yet
+    navigate(permalink);
+  }, [imageId, location, navigate, permalink]);
 
   if (!imageId) {
     return null;
@@ -28,13 +45,21 @@ export const Litzer: FC<{
   return (
     <Host>
       <h1>{litzMessage}</h1>
-      <LitzImage
-        src={`/assets/litzes/${imageId}`}
-        onError={() => setImageId(fallbackImageId)}
-      />
+      <ImageWrapper>
+        <LitzImage
+          src={`${getServerBaseUrl()}/assets/litzes/${imageId}`}
+          onError={() => setImageId(fallbackImageId)}
+        />
+      </ImageWrapper>
       <br />
       <LinkContainer>
-        <Link to={getPermalink()}>Permalink</Link>
+        <button
+          onClick={() => {
+            setGetNextImage(true);
+          }}
+        >
+          Es anders Bild
+        </button>
         <Separator />
         <Link to="/würg">Würg neui Litz Bilder ine</Link>
       </LinkContainer>
@@ -54,19 +79,24 @@ export const Litzer: FC<{
     return `${startWithUpper(prefix)}${startWithUpper(name)} häts glitzt!`;
   }
 
-  function getPermalink() {
+  function getPermalink(name: string, originalPrefix?: string, imageId = "") {
     return originalPrefix
       ? `/${originalPrefix}/${name}/${imageId}`
       : `/${name}/${imageId}`;
   }
 
   async function initializeImageId() {
-    if (initialImageId) {
+    if (!getNextImage) {
       return;
     }
 
     try {
-      setImageId(await fetch("/server/random-litz.php").then((r) => r.json()));
+      setGetNextImage(false);
+      setImageId(
+        await fetch(`${getServerBaseUrl()}/server/random-litz.php`).then((r) =>
+          r.json()
+        )
+      );
     } catch (err) {
       console.error(`Failed to load image: ${JSON.stringify(err)}`);
       setImageId(fallbackImageId);
@@ -80,6 +110,10 @@ function startWithUpper(value: string) {
 
 const Host = styled.div`
   text-align: center;
+`;
+
+const ImageWrapper = styled.div`
+  height: 310px;
 `;
 
 const LitzImage = styled.img`
