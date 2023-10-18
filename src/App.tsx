@@ -5,7 +5,7 @@ import { Litzer } from "./components/Litzer";
 import { Uplitzer } from "./components/Uplitzer";
 import { LitzerWrapper } from "./LitzerWrapper";
 
-const App: FC = () => {
+export const App: FC = () => {
   const router = createBrowserRouter([
     {
       path: ":name",
@@ -36,5 +36,3 @@ const App: FC = () => {
     </>
   );
 };
-
-export default App;
