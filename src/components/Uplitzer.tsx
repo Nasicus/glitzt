@@ -38,7 +38,7 @@ export const Uplitzer: FC = () => {
 
     try {
       const response = await fetch(
-        `${getServerBaseUrl()}/server/upload-litz.php"`,
+        `${getServerBaseUrl()}/server/upload-litz.php`,
         {
           method: "POST",
           body: data,
