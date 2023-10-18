@@ -73,8 +73,8 @@ export const Litzer: FC<{
       setNextImageId(nextImageId);
     } catch (err) {
       setGetNextImage(false);
-      console.error(`Failed to load image: ${JSON.stringify(err)}`);
       setNextImageId(fallbackImageId);
+      console.error(`Failed to load image: ${JSON.stringify(err)}`);
     }
   }
 };
