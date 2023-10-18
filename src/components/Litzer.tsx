@@ -10,46 +10,25 @@ export const Litzer: FC<{
   name?: string;
   prefix?: string;
   imageId?: string;
-}> = ({ name = "🤦", imageId: initialImageId, prefix: originalPrefix }) => {
+}> = ({ name = "🤦", imageId: imageIdToDisplay, prefix: originalPrefix }) => {
   const litzMessage = useMemo(getMessage, [name, originalPrefix]);
-  const [imageId, setImageId] = useState(initialImageId);
-  const [getNextImage, setGetNextImage] = useState(!initialImageId);
+  const [nextImageId, setNextImageId] = useState(imageIdToDisplay);
+  const [getNextImage, setGetNextImage] = useState(!imageIdToDisplay);
 
   useEffect(() => {
     initializeImageId().then(null);
   }, [getNextImage]);
 
-  // set the url to permanent url if it's not already there
-  const location = useLocation();
-  const navigate = useNavigate();
-  const permalink = getPermalink(name, originalPrefix, imageId);
-
-  useEffect(() => {
-    const currentLink = location.pathname
-      .split("/")
-      .map((part) => decodeURIComponent(part))
-      .join("/");
-
-    if (!imageId || currentLink === permalink) {
-      return;
-    }
-
-    // navigate to permalink, if not there yet
-    navigate(permalink);
-  }, [imageId, location, navigate, permalink]);
-
-  if (!imageId) {
-    return null;
-  }
+  useLitzRedirector(name, originalPrefix, nextImageId);
 
   return (
     <Host>
       <h1>{litzMessage}</h1>
       <ImageWrapper>
-        <LitzImage
-          src={`${getServerBaseUrl()}/assets/litzes/${imageId}`}
-          onError={() => setImageId(fallbackImageId)}
-        />
+        {imageIdToDisplay && <LitzImage
+          src={`${getServerBaseUrl()}/assets/litzes/${imageIdToDisplay}`}
+          onError={() => setNextImageId(nextImageId)}
+        />}
       </ImageWrapper>
       <br />
       <LinkContainer>
@@ -80,12 +59,6 @@ export const Litzer: FC<{
     return `${startWithUpper(prefix)}${startWithUpper(name)} häts glitzt!`;
   }
 
-  function getPermalink(name: string, originalPrefix?: string, imageId = "") {
-    return originalPrefix
-      ? `/${originalPrefix}/${name}/${imageId}`
-      : `/${name}/${imageId}`;
-  }
-
   async function initializeImageId() {
     if (!getNextImage) {
       return;
@@ -97,14 +70,42 @@ export const Litzer: FC<{
       ).then((r) => r.json());
 
       setGetNextImage(false);
-      setImageId(nextImageId);
+      setNextImageId(nextImageId);
     } catch (err) {
       setGetNextImage(false);
       console.error(`Failed to load image: ${JSON.stringify(err)}`);
-      setImageId(fallbackImageId);
+      setNextImageId(fallbackImageId);
     }
   }
 };
+
+function useLitzRedirector(name: string, originalPrefix?: string, imageId?: string, ) {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const litzUrl = getLitzPath();
+  
+    useEffect(() => {
+      const currentPath = location.pathname
+        .split("/")
+        .map((part) => decodeURIComponent(part))
+        .join("/");
+  
+      if (!imageId || currentPath === litzUrl) {
+        return;
+      }
+  
+      // navigate to permalink, if not there yet
+      navigate(litzUrl);
+    }, [imageId, location, navigate, litzUrl]);
+    
+    return null;
+
+  function getLitzPath() {
+    return originalPrefix
+      ? `/${originalPrefix}/${name}/${imageId ||""}`
+      : `/${name}/${imageId ||""}`;
+  }
+}
 
 function startWithUpper(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
