@@ -2,9 +2,7 @@ import { FC, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { getServerBaseUrl } from "../urlUtils";
-
-const fileTypes = ["GIF"];
+import { getServerBaseUrl } from "./urlUtils.ts";
 
 export const Uplitzer: FC = () => {
   const navigate = useNavigate();
@@ -22,7 +20,7 @@ export const Uplitzer: FC = () => {
       <FileUploader
         handleChange={handleChange}
         name="file"
-        types={fileTypes}
+        types={["GIF"]}
         label="Wähl es Litz Bild us..."
         hoverTitle="jetzt musch loslah!"
         maxSize="12"
@@ -42,7 +40,7 @@ export const Uplitzer: FC = () => {
         {
           method: "POST",
           body: data,
-        }
+        },
       );
       const responseText = await response.text();
 

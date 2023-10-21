@@ -1,8 +1,9 @@
 import { FC, useEffect, useMemo, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { getServerBaseUrl } from "../urlUtils";
-import { Separator } from "./Separator";
+import { getServerBaseUrl } from "./urlUtils.ts";
+import { Separator } from "./Separator.tsx";
+import { useLitzRedirector } from "./useLitzRedirector.tsx";
 
 const fallbackImageId = "litz1.gif";
 
@@ -25,21 +26,23 @@ export const Litzer: FC<{
     <Host>
       <h1>{litzMessage}</h1>
       <ImageWrapper>
-        {imageIdToDisplay && <LitzImage
-          src={`${getServerBaseUrl()}/assets/litzes/${imageIdToDisplay}`}
-          onError={() => setNextImageId(nextImageId)}
-        />}
+        {imageIdToDisplay && (
+          <LitzImage
+            src={`${getServerBaseUrl()}/assets/litzes/${imageIdToDisplay}`}
+            onError={() => setNextImageId(fallbackImageId)}
+          />
+        )}
       </ImageWrapper>
       <br />
       <LinkContainer>
-        <button
+        <StyledButton
           disabled={getNextImage}
           onClick={() => {
             setGetNextImage(true);
           }}
         >
           Es anders Bild
-        </button>
+        </StyledButton>
         <Separator />
         <Link to="/würg">Würg neui Litz Bilder ine</Link>
       </LinkContainer>
@@ -66,7 +69,7 @@ export const Litzer: FC<{
 
     try {
       const nextImageId = await fetch(
-        `${getServerBaseUrl()}/server/random-litz.php`
+        `${getServerBaseUrl()}/server/random-litz.php`,
       ).then((r) => r.json());
 
       setGetNextImage(false);
@@ -78,34 +81,6 @@ export const Litzer: FC<{
     }
   }
 };
-
-function useLitzRedirector(name: string, originalPrefix?: string, imageId?: string, ) {
-    const location = useLocation();
-    const navigate = useNavigate();
-    const litzUrl = getLitzPath();
-  
-    useEffect(() => {
-      const currentPath = location.pathname
-        .split("/")
-        .map((part) => decodeURIComponent(part))
-        .join("/");
-  
-      if (!imageId || currentPath === litzUrl) {
-        return;
-      }
-  
-      // navigate to permalink, if not there yet
-      navigate(litzUrl);
-    }, [imageId, location, navigate, litzUrl]);
-    
-    return null;
-
-  function getLitzPath() {
-    return originalPrefix
-      ? `/${originalPrefix}/${name}/${imageId ||""}`
-      : `/${name}/${imageId ||""}`;
-  }
-}
 
 function startWithUpper(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
@@ -133,5 +108,13 @@ const LinkContainer = styled.div`
   @media screen and (max-width: 700px) {
     margin-top: 10px;
     font-size: 1rem;
+  }
+`;
+
+const StyledButton = styled.button`
+  @media screen and (max-width: 700px) {
+    width: 100%;
+    height: 2.5rem;
+    margin-bottom: 1rem;
   }
 `;

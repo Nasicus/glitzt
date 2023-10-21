@@ -7,4 +7,8 @@ export const Separator: FC = () => {
 
 const Host = styled.span`
   padding: 0 5px;
+
+  @media screen and (max-width: 700px) {
+    display: none;
+  }
 `;

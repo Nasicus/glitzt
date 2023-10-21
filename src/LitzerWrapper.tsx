@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { useMatches } from "react-router-dom";
-import { Litzer } from "./components/Litzer";
+import { Litzer } from "./Litzer.tsx";
 
 export const LitzerWrapper: FC = () => {
   const matches = useMatches();
