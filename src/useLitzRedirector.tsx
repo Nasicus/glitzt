@@ -1,34 +1,25 @@
-﻿import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+﻿import { useNavigate } from "react-router-dom";
 
 export function useLitzRedirector(
   name: string,
-  originalPrefix?: string,
-  imageId?: string,
+  prefix?: string,
+  currentImageId?: string,
 ) {
-  const location = useLocation();
   const navigate = useNavigate();
-  const litzUrl = getLitzPath();
 
-  useEffect(() => {
-    const currentPath = location.pathname
-      .split("/")
-      .map((part) => decodeURIComponent(part))
-      .join("/");
+  return (newImageId: string) => redirect(newImageId, currentImageId);
 
-    if (!imageId || currentPath === litzUrl) {
+  function redirect(newImageId: string, oldImageId?: string) {
+    if (newImageId === oldImageId) {
       return;
     }
 
-    // navigate to permalink, if not there yet
-    navigate(litzUrl);
-  }, [imageId, location, navigate, litzUrl]);
+    navigate(getLitzPath(newImageId), { replace: !oldImageId });
+  }
 
-  return null;
-
-  function getLitzPath() {
-    return originalPrefix
-      ? `/${originalPrefix}/${name}/${imageId || ""}`
-      : `/${name}/${imageId || ""}`;
+  function getLitzPath(imageId: string) {
+    return prefix
+      ? `/${prefix}/${name}/${imageId}`
+      : `/${name}/${imageId}`;
   }
 }

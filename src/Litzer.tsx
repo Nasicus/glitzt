@@ -13,14 +13,13 @@ export const Litzer: FC<{
   imageId?: string;
 }> = ({ name = "🤦", imageId: imageIdToDisplay, prefix: originalPrefix }) => {
   const litzMessage = useMemo(getMessage, [name, originalPrefix]);
-  const [nextImageId, setNextImageId] = useState(imageIdToDisplay);
   const [getNextImage, setGetNextImage] = useState(!imageIdToDisplay);
 
   useEffect(() => {
     initializeImageId().then(null);
   }, [getNextImage]);
 
-  useLitzRedirector(name, originalPrefix, nextImageId);
+  const redirectToNextImage = useLitzRedirector(name, originalPrefix, imageIdToDisplay);
 
   return (
     <Host>
@@ -29,7 +28,7 @@ export const Litzer: FC<{
         {imageIdToDisplay && (
           <LitzImage
             src={`${getServerBaseUrl()}/assets/litzes/${imageIdToDisplay}`}
-            onError={() => setNextImageId(fallbackImageId)}
+            onError={() => redirectToNextImage(fallbackImageId)}
           />
         )}
       </ImageWrapper>
@@ -73,10 +72,10 @@ export const Litzer: FC<{
       ).then((r) => r.json());
 
       setGetNextImage(false);
-      setNextImageId(nextImageId);
+      redirectToNextImage(nextImageId);
     } catch (err) {
       setGetNextImage(false);
-      setNextImageId(fallbackImageId);
+      redirectToNextImage(fallbackImageId);
       console.error(`Failed to load image: ${JSON.stringify(err)}`);
     }
   }
