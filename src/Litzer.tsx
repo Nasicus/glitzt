@@ -7,6 +7,10 @@ import { useLitzRedirector } from "./useLitzRedirector.tsx";
 
 const fallbackImageId = "litz1.gif";
 
+function litzUrl(imageId: string) {
+  return `${getServerBaseUrl()}/assets/litzes/${imageId}`;
+}
+
 export const Litzer: FC<{
   name?: string;
   prefix?: string;
@@ -14,6 +18,13 @@ export const Litzer: FC<{
 }> = ({ name = "🤦", imageId: imageIdToDisplay, prefix: originalPrefix }) => {
   const litzMessage = useMemo(() => getMessage(), [name, originalPrefix]);
   const [getNextImage, setGetNextImage] = useState(!imageIdToDisplay);
+  // The currently *displayed* GIF URL. Swapping `<img src>` mid-animation
+  // freezes the old GIF on whatever frame it was on (or appears to rewind it,
+  // depending on the browser) until the new one is decoded. So we preload the
+  // next GIF in memory and only flip the visible src once it's ready.
+  const [displayedSrc, setDisplayedSrc] = useState<string | undefined>(
+    imageIdToDisplay ? litzUrl(imageIdToDisplay) : undefined,
+  );
 
   useEffect(() => {
     initializeImageId().then(null);
@@ -25,16 +36,28 @@ export const Litzer: FC<{
     imageIdToDisplay,
   );
 
+  useEffect(() => {
+    if (!imageIdToDisplay) return;
+    const next = litzUrl(imageIdToDisplay);
+    const preloader = new Image();
+    let cancelled = false;
+    preloader.onload = () => {
+      if (!cancelled) setDisplayedSrc(next);
+    };
+    preloader.onerror = () => {
+      if (!cancelled) redirectToNextImage(fallbackImageId);
+    };
+    preloader.src = next;
+    return () => {
+      cancelled = true;
+    };
+  }, [imageIdToDisplay]);
+
   return (
     <Host>
       <h1>{litzMessage}</h1>
       <ImageWrapper>
-        {imageIdToDisplay && (
-          <LitzImage
-            src={`${getServerBaseUrl()}/assets/litzes/${imageIdToDisplay}`}
-            onError={() => redirectToNextImage(fallbackImageId)}
-          />
-        )}
+        {displayedSrc && <LitzImage src={displayedSrc} />}
       </ImageWrapper>
       <br />
       <LinkContainer>
