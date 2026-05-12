@@ -1,0 +1,94 @@
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: yarn
+
+      - run: yarn install --frozen-lockfile
+
+      - run: yarn build
+
+      - name: Inject secrets into PHP
+        env:
+          PHP_PASSWORD: ${{ secrets.PHP_PASSWORD }}
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+        run: |
+          node -e '
+            const fs = require("fs");
+            const subs = [
+              {
+                file: "server/upload-litz.php",
+                placeholder: "<da musch dis super sicherheits pw setze bevor das uf dä server tuesch>",
+                value: process.env.PHP_PASSWORD,
+              },
+              {
+                file: "server/deploy.php",
+                placeholder: "<DEPLOY_TOKEN_PLACEHOLDER>",
+                value: process.env.DEPLOY_TOKEN,
+              },
+            ];
+            for (const {file, placeholder, value} of subs) {
+              const content = fs.readFileSync(file, "utf8");
+              if (!content.includes(placeholder)) {
+                console.error("Placeholder not found in " + file);
+                process.exit(1);
+              }
+              fs.writeFileSync(file, content.replace(placeholder, value));
+            }
+          '
+
+      - name: Build deploy tarball
+        run: |
+          stage=$(mktemp -d)
+          cp dist/index.html dist/favicon.ico dist/manifest.json "$stage/"
+          mkdir -p "$stage/assets"
+          cp -r dist/assets/. "$stage/assets/"
+          rm -rf "$stage/assets/litzes"
+          mkdir -p "$stage/server"
+          cp -r server/. "$stage/server/"
+          # Explicit file list: PharData::extractTo can't handle the "./"
+          # directory entry that `tar -C dir .` produces.
+          tar -czf deploy.tar.gz -C "$stage" \
+            index.html favicon.ico manifest.json assets server
+          ls -lh deploy.tar.gz
+
+      - name: Upload to deploy.php
+        timeout-minutes: 3
+        env:
+          DEPLOY_URL: ${{ secrets.DEPLOY_URL }}
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+        run: |
+          response=$(curl -sS -w '\nHTTP_STATUS=%{http_code}' \
+            -X POST \
+            -F "token=$DEPLOY_TOKEN" \
+            -F "archive=@deploy.tar.gz" \
+            "$DEPLOY_URL")
+          echo "$response"
+          status=$(echo "$response" | grep '^HTTP_STATUS=' | cut -d= -f2)
+          if [ "$status" != "200" ]; then
+            echo "Deploy failed: HTTP $status"
+            exit 1
+          fi
+          # Body must start with "OK". A 200 with index.html means deploy.php
+          # is missing and the SPA fallback (.htaccess) caught the request.
+          if ! echo "$response" | grep -q '^OK '; then
+            echo "Deploy failed: response body is not 'OK ...'"
+            echo "(deploy.php likely missing — re-upload it manually via FTP)"
+            exit 1
+          fi
