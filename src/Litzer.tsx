@@ -12,14 +12,18 @@ export const Litzer: FC<{
   prefix?: string;
   imageId?: string;
 }> = ({ name = "🤦", imageId: imageIdToDisplay, prefix: originalPrefix }) => {
-  const litzMessage = useMemo(getMessage, [name, originalPrefix]);
+  const litzMessage = useMemo(() => getMessage(), [name, originalPrefix]);
   const [getNextImage, setGetNextImage] = useState(!imageIdToDisplay);
 
   useEffect(() => {
     initializeImageId().then(null);
   }, [getNextImage]);
 
-  const redirectToNextImage = useLitzRedirector(name, originalPrefix, imageIdToDisplay);
+  const redirectToNextImage = useLitzRedirector(
+    name,
+    originalPrefix,
+    imageIdToDisplay,
+  );
 
   return (
     <Host>

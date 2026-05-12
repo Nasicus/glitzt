@@ -23,13 +23,14 @@ export const Uplitzer: FC = () => {
         types={["GIF"]}
         label="Wähl es Litz Bild us..."
         hoverTitle="jetzt musch loslah!"
-        maxSize="12"
+        maxSize={12}
       />
       <StyledLink to="/">Ok ha gnueg gwürgt - zrug zum litze!</StyledLink>
     </Host>
   );
 
-  async function handleChange(file: File) {
+  async function handleChange(fileOrFiles: File | File[]) {
+    const file = Array.isArray(fileOrFiles) ? fileOrFiles[0] : fileOrFiles;
     const data = new FormData();
     data.append("image", file);
     data.append("password", password);
