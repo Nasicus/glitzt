@@ -1,14 +1,6 @@
 import { FC } from "react";
-import styled from "styled-components";
+import s from "./Separator.module.css";
 
 export const Separator: FC = () => {
-  return <Host>|</Host>;
+  return <span className={s.host}>|</span>;
 };
-
-const Host = styled.span`
-  padding: 0 5px;
-
-  @media screen and (max-width: 700px) {
-    display: none;
-  }
-`;

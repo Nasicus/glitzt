@@ -1,17 +1,18 @@
 import { FC, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { Link, useNavigate } from "react-router-dom";
-import styled from "styled-components";
 import { getServerBaseUrl } from "./urlUtils.ts";
+import s from "./Uplitzer.module.css";
 
 export const Uplitzer: FC = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState<string>("");
 
   return (
-    <Host>
+    <div className={s.host}>
       <h1>Also los... würg ine!</h1>
-      <PasswordField
+      <input
+        className={s.password}
         type="password"
         placeholder="Weisch s'Passwort?"
         value={password}
@@ -25,8 +26,10 @@ export const Uplitzer: FC = () => {
         hoverTitle="jetzt musch loslah!"
         maxSize={12}
       />
-      <StyledLink to="/">Ok ha gnueg gwürgt - zrug zum litze!</StyledLink>
-    </Host>
+      <Link className={s.link} to="/">
+        Ok ha gnueg gwürgt - zrug zum litze!
+      </Link>
+    </div>
   );
 
   async function handleChange(fileOrFiles: File | File[]) {
@@ -56,19 +59,3 @@ export const Uplitzer: FC = () => {
     }
   }
 };
-
-const Host = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
-
-const StyledLink = styled(Link)`
-  margin-top: 15px;
-  font-size: 0.75rem;
-`;
-
-const PasswordField = styled.input`
-  margin-bottom: 15px;
-`;

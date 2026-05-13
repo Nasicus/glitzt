@@ -1,0 +1,32 @@
+.host {
+  text-align: center;
+}
+
+.imageWrapper {
+  height: 310px;
+}
+
+.image {
+  object-fit: contain;
+  max-width: 480px;
+  max-height: 307.848px;
+  width: 100%;
+  height: auto;
+}
+
+.links {
+  font-size: 0.75rem;
+}
+
+@media screen and (max-width: 700px) {
+  .links {
+    margin-top: 10px;
+    font-size: 1rem;
+  }
+
+  .button {
+    width: 100%;
+    height: 2.5rem;
+    margin-bottom: 1rem;
+  }
+}

@@ -1,9 +1,9 @@
 import { FC, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import styled from "styled-components";
 import { getServerBaseUrl } from "./urlUtils.ts";
 import { Separator } from "./Separator.tsx";
 import { useLitzRedirector } from "./useLitzRedirector.tsx";
+import s from "./Litzer.module.css";
 
 const fallbackImageId = "litz1.gif";
 
@@ -54,25 +54,26 @@ export const Litzer: FC<{
   }, [imageIdToDisplay]);
 
   return (
-    <Host>
+    <div className={s.host}>
       <h1>{litzMessage}</h1>
-      <ImageWrapper>
-        {displayedSrc && <LitzImage src={displayedSrc} />}
-      </ImageWrapper>
+      <div className={s.imageWrapper}>
+        {displayedSrc && <img className={s.image} src={displayedSrc} />}
+      </div>
       <br />
-      <LinkContainer>
-        <StyledButton
+      <div className={s.links}>
+        <button
+          className={s.button}
           disabled={getNextImage}
           onClick={() => {
             setGetNextImage(true);
           }}
         >
           Es anders Bild
-        </StyledButton>
+        </button>
         <Separator />
         <Link to="/würg">Würg neui Litz Bilder ine</Link>
-      </LinkContainer>
-    </Host>
+      </div>
+    </div>
   );
 
   function getMessage() {
@@ -111,36 +112,3 @@ export const Litzer: FC<{
 function startWithUpper(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
-
-const Host = styled.div`
-  text-align: center;
-`;
-
-const ImageWrapper = styled.div`
-  height: 310px;
-`;
-
-const LitzImage = styled.img`
-  object-fit: contain;
-  max-width: 480px;
-  max-height: 307.848px;
-  width: 100%;
-  height: auto;
-`;
-
-const LinkContainer = styled.div`
-  font-size: 0.75rem;
-
-  @media screen and (max-width: 700px) {
-    margin-top: 10px;
-    font-size: 1rem;
-  }
-`;
-
-const StyledButton = styled.button`
-  @media screen and (max-width: 700px) {
-    width: 100%;
-    height: 2.5rem;
-    margin-bottom: 1rem;
-  }
-`;
