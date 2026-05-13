@@ -1,9 +1,14 @@
-import { FC } from "react";
+import { FC, lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { GithubFork } from "./GithubFork.tsx";
 import { Litzer } from "./Litzer.tsx";
-import { Uplitzer } from "./Uplitzer.tsx";
 import { LitzerWrapper } from "./LitzerWrapper";
+
+// Uplitzer is only reached at /würg and pulls in react-drag-drop-files, so we
+// keep it out of the main bundle.
+const Uplitzer = lazy(() =>
+  import("./Uplitzer.tsx").then((m) => ({ default: m.Uplitzer })),
+);
 
 const router = createBrowserRouter([
   {
@@ -20,7 +25,11 @@ const router = createBrowserRouter([
   },
   {
     path: "würg",
-    element: <Uplitzer />,
+    element: (
+      <Suspense fallback={null}>
+        <Uplitzer />
+      </Suspense>
+    ),
   },
   {
     path: "*",
