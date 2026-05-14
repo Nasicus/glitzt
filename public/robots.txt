@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /würg
+Disallow: /server/

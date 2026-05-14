@@ -39,7 +39,9 @@ const router = createBrowserRouter([
 
 export const App: FC = () => (
   <>
-    <RouterProvider router={router} />
+    <main>
+      <RouterProvider router={router} />
+    </main>
     <GithubFork />
   </>
 );

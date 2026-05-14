@@ -57,7 +57,15 @@ export const Litzer: FC<{
     <div className={s.host}>
       <h1>{litzMessage}</h1>
       <div className={s.imageWrapper}>
-        {displayedSrc && <img className={s.image} src={displayedSrc} />}
+        {displayedSrc && (
+          <img
+            className={s.image}
+            src={displayedSrc}
+            alt={litzMessage}
+            width={480}
+            height={270}
+          />
+        )}
       </div>
       <br />
       <div className={s.links}>
