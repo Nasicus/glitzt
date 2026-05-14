@@ -104,9 +104,12 @@ export const Litzer: FC<{
 
     // On first paint of `/`, index.php has already picked a litz and started a
     // `<link rel="preload">` for it — use that instead of doing a fetch round
-    // trip. Cleared after use so the "another image" button still fetches.
-    const preloaded = window.__INITIAL_LITZ__;
-    if (preloaded) {
+    // trip. Only consume it when this Litzer has no imageId yet; if the URL
+    // already names a litz, the global matches the current one and using it
+    // would no-op the redirect, so "another image" would fail silently on the
+    // first click.
+    if (!imageIdToDisplay && window.__INITIAL_LITZ__) {
+      const preloaded = window.__INITIAL_LITZ__;
       window.__INITIAL_LITZ__ = undefined;
       setGetNextImage(false);
       redirectToNextImage(preloaded);
