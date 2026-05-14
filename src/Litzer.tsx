@@ -102,6 +102,17 @@ export const Litzer: FC<{
       return;
     }
 
+    // On first paint of `/`, index.php has already picked a litz and started a
+    // `<link rel="preload">` for it — use that instead of doing a fetch round
+    // trip. Cleared after use so the "another image" button still fetches.
+    const preloaded = window.__INITIAL_LITZ__;
+    if (preloaded) {
+      window.__INITIAL_LITZ__ = undefined;
+      setGetNextImage(false);
+      redirectToNextImage(preloaded);
+      return;
+    }
+
     try {
       const nextImageId = await fetch(
         `${getServerBaseUrl()}/server/random-litz.php`,
