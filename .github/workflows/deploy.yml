@@ -56,7 +56,7 @@ jobs:
       - name: Build deploy tarball
         run: |
           stage=$(mktemp -d)
-          cp dist/index.html dist/favicon.ico dist/manifest.json "$stage/"
+          cp dist/index.html dist/favicon.ico dist/manifest.json dist/robots.txt "$stage/"
           mkdir -p "$stage/assets"
           cp -r dist/assets/. "$stage/assets/"
           rm -rf "$stage/assets/litzes"
@@ -65,7 +65,7 @@ jobs:
           # Explicit file list: PharData::extractTo can't handle the "./"
           # directory entry that `tar -C dir .` produces.
           tar -czf deploy.tar.gz -C "$stage" \
-            index.html favicon.ico manifest.json assets server
+            index.html favicon.ico manifest.json robots.txt assets server
           ls -lh deploy.tar.gz
 
       - name: Upload to deploy.php
